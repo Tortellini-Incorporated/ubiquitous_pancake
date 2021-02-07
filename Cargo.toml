@@ -1,0 +1,25 @@
+[package]
+name = "ubiquitous_pancake"
+version = "0.1.0"
+authors = ["Claire Meyer <signedrewind@gmail.com>"]
+edition = "2018"
+build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+image = "0.23.12"
+winit = "0.23.0"
+cgmath = "0.17.0"
+env_logger = "0.8.2"
+log = "0.4.11"
+wgpu = "0.7.0"
+futures = "0.3.8"
+rand = "0.8.2"
+bytemuck = { version = "1.5.0", features = [ "derive" ] }
+
+[build-dependencies]
+anyhow = "1.0.38"
+fs_extra = "1.2.0"
+glob = "0.3.0"
+shaderc = "0.7.0"
