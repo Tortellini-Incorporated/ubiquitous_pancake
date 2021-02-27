@@ -7,6 +7,7 @@ use winit::event::WindowEvent::{MouseInput, ModifiersChanged};
 use rand::Rng;
 use wgpu::util::DeviceExt;
 use image::GenericImageView;
+use wgpu::TextureDataLayout;
 
 struct State {
     surface: wgpu::Surface,
@@ -117,9 +118,9 @@ impl State {
         );
         let num_indices = INDICES.len() as u32;
 
-        let diffuse_bytes = include_bytes!("../claire.png");
+        let diffuse_bytes = include_bytes!("../happy-tree.png");
         let diffuse_image = image::load_from_memory(diffuse_bytes).unwrap();
-        let diffuse_rgba = diffuse_image.as_rgb8().unwrap();
+        let diffuse_rgba = diffuse_image.as_rgba8().unwrap();
 
         use image::GenericImageView;
         let dimensions = diffuse_image.dimensions();
@@ -150,11 +151,43 @@ impl State {
             diffuse_rgba,
             wgpu::TextureDataLayout {
                 offset: 0,
-                bytes_per_row: 4 * dimensions.0,
+                bytes_per_row:4 * dimensions.0,
                 rows_per_image: dimensions.1,
             },
             texture_size,
+        );/**//*
+        let buffer = device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("Temp Buffer"),
+                contents: &diffuse_rgba,
+                usage: wgpu::BufferUsage::COPY_SRC,
+            }
         );
+
+        let mut encoder = device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+            label: Some("texture_buffer_copy_encoder"),
+        });
+
+        encoder.copy_buffer_to_texture(
+            wgpu::BufferCopyView {
+                buffer: &buffer,
+                layout: TextureDataLayout {
+                    offset: 0,
+                    bytes_per_row: 3 * dimensions.0,
+                    rows_per_image: dimensions.1,
+                }
+            },
+            wgpu::TextureCopyView {
+                texture: &diffuse_texture,
+                mip_level: 0,
+                //array_layer: 0,
+                origin: wgpu::Origin3d::ZERO,
+            },
+            texture_size,
+        );
+
+        queue.submit(std::iter::once(encoder.finish()));
+        //end thing!*/
 
         let diffuse_texture_view = diffuse_texture.create_view(&wgpu::TextureViewDescriptor::default());
         let diffuse_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
